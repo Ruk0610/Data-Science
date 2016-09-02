@@ -1,0 +1,51 @@
+---
+output: pdf_document
+---
+
+## Loading required packages: knitr
+```{r}
+require(knitr)
+```
+
+```{r}
+require(ggplot2)
+```
+## Loading required packages: ggplot2
+
+```{r}
+opts_chunk$set(echo = TRUE)
+set.seed(1)
+```
+
+n <- 40
+lambda <- 0.2
+numsim <- 2000
+
+```{r}
+dataset <- matrix(rexp(n*numsim, lambda), numsim)
+```
+
+```{r}
+Theory_Mean <- 1/lambda
+Row_Mean <- apply(dataset, 1, mean)
+Actual_Mean <- mean(Row_Mean)
+Theory_Standard_Deviation <- ((1/lambda)*(1/sqrt(n)))
+Actual_Standard_Deviation <- sd(Row_Mean)
+Theory_Variance <- Theory_Standard_Deviation^2
+Actual_Variance <- var(Row_Mean)
+```
+
+# Theoretical Mean = 5.0, Actual Mean = 5.019, Theoritical Standard Deviation = 0.791, Actual Standard Deviation = 0.779, Theoritical Variance = 0.625, Actual Variance = 0.607
+
+
+dfRow_Mean <- data.frame(Row_Mean) # Convert to data.frame from ggplot
+
+mp <- ggplot(dfRow_Mean, aes(x = Row_Mean))
+mp <- mp + geom_histogram(binwidth = lambda, fill = "Red", color = "Blue", aes(y = ..density..))
+mp <- mp + labs(title = "Exponential Distribution Density of 40 Numbers", x = "Mean of 40 Selections", y = "Density")
+mp <- mp + geom_vline(xintercept = Actual_Mean, size = 1.0, color = "Blue") # add a line for the actual mean
+mp <- mp + stat_function(fun = dnorm, args = list(mean = Actual_Mean, sd = Actual_Standard_Deviation), color = "Yellow", size = 1.0)
+mp <- mp + geom_vline(xintercept = Theory_Mean, size = 1.0, color = "RED", linetype = "longdash")
+mp <- mp + stat_function(fun = dnorm, args = list(mean = Theory_Mean, sd = Theory_Standard_Deviation), color = "Green", size = 1.0)
+mp  
+
