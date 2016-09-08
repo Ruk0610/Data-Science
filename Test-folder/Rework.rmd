@@ -1,0 +1,42 @@
+---
+output: pdf_document
+---
+#Installing required packages
+```{r}
+library(dplyr)
+
+library(lubridate)
+
+library(lattice)
+```
+# 1.Load the data
+```{r}
+Activity <- read.csv("Activity Monitoring Data/activity.csv", sep = ",")
+
+summary ("Activity")
+```
+
+# 2.Process/Transfer the data (if necessary) into a format suitable analysis
+
+```{r}
+Activity$date <- as.Date(Activity$date)
+```
+
+# What is the Mean Total Number of steps taken per day?
+
+```{r}
+# 1. Calculating the Total Number of Steps Taken per day
+
+Total_Steps_Each_Day <- summarise(group_by(Activity,date), numStep = sum(steps, na.rm = TRUE))
+
+# 2. Histogram of Total_Steps_Each_Day
+
+hist(Total_Steps_Each_Day$numStep, main = "histogram of Total Number of Steps Taken Per Day", xlab = "")
+
+# 3. Calculate and report the mean and median of the total number of steps taken per day
+
+data.frame(Mean = mean(Total_Steps_Each_Day$numStep, na.rm = TRUE), Median = median(Total_Steps_Each_Day$numStep, na.rm = TRUE))
+
+```
+
+
